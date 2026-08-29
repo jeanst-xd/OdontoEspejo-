@@ -12,7 +12,7 @@
 <script type="module">
   // ====== CONFIGURACIÓN DE FIREBASE ======
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-  import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+  import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBerEQWFs3Ol2oic7krbIRjGGJ5Z55wkpg",
@@ -46,10 +46,28 @@
 
   window.dbSetSlot = async (dateKey, slotKey, value) => {
     await setDoc(doc(db, "citas", dateKey, "slots", slotKey), value);
+    // Copia plana para poder buscar por paciente en cualquier fecha sin
+    // tener que recorrer día por día (historial de pacientes).
+    await setDoc(doc(db, "citas_index", dateKey + "_" + slotKey), {
+      ...value,
+      fecha: dateKey,
+      slot: slotKey
+    });
   };
 
   window.dbDeleteSlot = async (dateKey, slotKey) => {
     await deleteDoc(doc(db, "citas", dateKey, "slots", slotKey));
+    await deleteDoc(doc(db, "citas_index", dateKey + "_" + slotKey));
+  };
+
+  // Trae TODAS las citas (de todas las fechas) para armar el historial
+  // por paciente. Para el tamaño de datos de un consultorio esto es
+  // rápido; si algún día crece mucho se puede optimizar con consultas.
+  window.dbGetAllCitas = async () => {
+    const snap = await getDocs(collection(db, "citas_index"));
+    const list = [];
+    snap.forEach(docSnap => list.push(docSnap.data()));
+    return list;
   };
 
   window.firebaseReady = true;
@@ -108,6 +126,33 @@
     background:var(--c1-bg);border:1px solid var(--c1-bd);border-radius:10px;
     padding:6px;margin-bottom:14px;cursor:pointer;
   }
+  .toolbar{display:flex;gap:8px;margin:-4px 0 14px;}
+  .toolbar .todaybtn{margin-bottom:0;flex:1;}
+  .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+  .cal-header button{border:none;background:var(--empty);color:var(--ink);width:34px;height:34px;border-radius:10px;font-size:18px;cursor:pointer;}
+  .cal-title{font-size:15px;font-weight:700;text-transform:capitalize;}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+  .cal-dow{font-size:10px;color:var(--sub);text-align:center;text-transform:uppercase;padding-bottom:4px;}
+  .cal-day{
+    aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+    border-radius:10px;font-size:13px;cursor:pointer;background:var(--empty);color:var(--ink);
+  }
+  .cal-day.other{opacity:.35;}
+  .cal-day.today{box-shadow:0 0 0 2px var(--c1) inset;font-weight:700;}
+  .cal-day.selected{background:var(--c2);color:#fff;font-weight:700;}
+  .cal-day:active{transform:scale(0.94);}
+  .hist-list{max-height:50vh;overflow-y:auto;margin-top:4px;}
+  .hist-empty{font-size:13px;color:var(--sub);text-align:center;padding:18px 0;}
+  .hist-item{
+    display:flex;align-items:center;gap:10px;padding:10px 8px;border-radius:12px;cursor:pointer;
+    border-bottom:1px solid var(--line);
+  }
+  .hist-item:active{background:var(--empty);}
+  .hist-item .avatar{flex:0 0 auto;width:30px;height:30px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;}
+  .hist-item .hist-main{flex:1;min-width:0;}
+  .hist-item .hist-name{font-size:13px;font-weight:700;color:var(--ink);}
+  .hist-item .hist-sub{font-size:11px;color:var(--sub);}
+  .hist-item .hist-date{font-size:11px;color:var(--sub);text-align:right;white-space:nowrap;}
   .legend{display:flex;gap:14px;margin:2px 0 14px;font-size:12px;color:var(--sub);}
   .legend span{display:inline-flex;align-items:center;gap:6px;}
   .dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
@@ -183,7 +228,33 @@
   .btn.danger{background:var(--danger-bg);border-color:#F0997B;color:var(--danger);}
   .btn:active{transform:scale(0.98);}
   .closebar{width:36px;height:4px;background:var(--line);border-radius:99px;margin:0 auto 14px;}
-  .empty-note{font-size:12px;color:var(--sub);text-align:center;margin:18px 0 4px;}
+  .datebar.is-today{border-color:var(--c1);box-shadow:0 0 0 2px var(--c1-bg) inset;}
+  .datebar.is-today .dnum{color:var(--c1);}
+  .summary{
+    text-align:center;font-size:12px;color:var(--sub);margin:-6px 0 12px;font-weight:600;
+  }
+  .cellrow{display:flex;align-items:center;gap:8px;}
+  .avatar{
+    flex:0 0 auto;width:26px;height:26px;border-radius:50%;color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;
+  }
+  .overlay{transition:background .18s ease;}
+  .overlay .sheet{transform:translateY(16px);opacity:0;transition:transform .2s ease,opacity .2s ease;}
+  .overlay.open .sheet{transform:translateY(0);opacity:1;}
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#15141F;
+      --card:#1E1D2C;
+      --ink:#F0EFFA;
+      --sub:#9A97C2;
+      --line:#332F4D;
+      --empty:#26243A;
+    }
+    .field input[type=text]{background:#26243A;color:var(--ink);}
+    .chip{background:#26243A;}
+    .btn{background:#26243A;color:var(--ink);}
+    .cal-header button{background:#26243A;}
+  }
 </style>
 </head>
 <body>
@@ -202,6 +273,13 @@
     <button id="nextDay" aria-label="Día siguiente">›</button>
   </div>
   <div class="todaybtn" id="todayBtn">ir a hoy</div>
+
+  <div class="toolbar">
+    <div class="todaybtn" id="openCalBtn">📅 Calendario</div>
+    <div class="todaybtn" id="openHistBtn">🗂️ Historial de pacientes</div>
+  </div>
+
+  <div class="summary" id="summary"></div>
 
   <div class="legend">
     <span><i class="dot c1"></i>Consultorio 1</span>
@@ -260,6 +338,44 @@
       <button class="btn danger" id="deleteBtn" style="display:none;">Borrar</button>
       <button class="btn" id="cancelBtn">Cancelar</button>
       <button class="btn primary" id="saveBtn">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlayCal">
+  <div class="sheet">
+    <div class="closebar"></div>
+    <h2>Ir a una fecha</h2>
+    <div class="subhead">Toca un día para ver las citas de esa fecha</div>
+
+    <div class="cal-header">
+      <button id="calPrev" aria-label="Mes anterior">‹</button>
+      <div class="cal-title" id="calTitle"></div>
+      <button id="calNext" aria-label="Mes siguiente">›</button>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+
+    <div class="actions">
+      <button class="btn" id="calCancelBtn">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlayHist">
+  <div class="sheet">
+    <div class="closebar"></div>
+    <h2>Historial de pacientes</h2>
+    <div class="subhead">Busca por nombre o apellido para ver todas sus citas</div>
+
+    <div class="field">
+      <label for="histInput">Paciente</label>
+      <input type="text" id="histInput" placeholder="Ej. Juan Céspedes" maxlength="40">
+    </div>
+
+    <div class="hist-list" id="histList"></div>
+
+    <div class="actions">
+      <button class="btn" id="histCancelBtn">Cerrar</button>
     </div>
   </div>
 </div>
@@ -339,6 +455,34 @@ function renderHeader(){
   const dnum = currentDate.toLocaleDateString('es-ES', { day:'numeric', month:'long' });
   document.getElementById('dow').textContent = dow;
   document.getElementById('dnum').textContent = dnum;
+
+  const today = new Date(); today.setHours(0,0,0,0);
+  const isToday = currentDate.getTime() === today.getTime();
+  document.querySelector('.datebar').classList.toggle('is-today', isToday);
+}
+
+function renderSummary(){
+  const totalSlots = SLOTS.length * 2;
+  const filled = Object.keys(dayData).length;
+  const free = totalSlots - filled;
+  const summaryEl = document.getElementById('summary');
+  if (summaryEl) {
+    summaryEl.textContent = filled === 0
+      ? 'Sin citas agendadas todavía'
+      : `${filled} cita${filled === 1 ? '' : 's'} · ${free} espacio${free === 1 ? '' : 's'} libre${free === 1 ? '' : 's'}`;
+  }
+}
+
+// Paleta de colores estable por paciente, según su nombre
+const AVATAR_PALETTE = ['#59BEC9','#6858C7','#E08E45','#4C9F70','#C1548C','#4A90D9'];
+function colorForName(name){
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
+  return AVATAR_PALETTE[hash % AVATAR_PALETTE.length];
+}
+function initialsFor(name){
+  const parts = name.trim().split(/\s+/);
+  return ((parts[0]?.[0] || '') + (parts[1]?.[0] || '')).toUpperCase();
 }
 
 function renderGrid(){
@@ -368,7 +512,8 @@ function renderGrid(){
       const cell = document.createElement('div');
       cell.className = 'cell' + (data ? ' filled c'+consult : '');
       if (data) {
-        cell.innerHTML = `<div class="name">${escapeHtml(data.paciente)}</div><div class="tipo">${escapeHtml(data.tipo === 'Otros' && data.otro ? data.otro : data.tipo)}</div>`;
+        const color = colorForName(data.paciente);
+        cell.innerHTML = `<div class="cellrow"><div class="avatar" style="background:${color}">${escapeHtml(initialsFor(data.paciente))}</div><div><div class="name">${escapeHtml(data.paciente)}</div><div class="tipo">${escapeHtml(data.tipo === 'Otros' && data.otro ? data.otro : data.tipo)}</div></div></div>`;
       } else {
         cell.innerHTML = `<div class="plus">+</div>`;
       }
@@ -378,6 +523,7 @@ function renderGrid(){
 
     gridEl.appendChild(row);
   });
+  renderSummary();
 }
 
 function escapeHtml(s){
@@ -510,6 +656,165 @@ document.getElementById('todayBtn').addEventListener('click', () => {
   currentDate.setHours(0,0,0,0);
   loadDay();
 });
+
+// ---- calendario mensual: ir directo a una fecha ----
+const overlayCal = document.getElementById('overlayCal');
+const calGrid = document.getElementById('calGrid');
+const calTitle = document.getElementById('calTitle');
+let calViewDate = new Date(currentDate); // mes que se está mostrando en el calendario
+
+function openCalendar(){
+  calViewDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+  renderCalendar();
+  overlayCal.classList.add('open');
+}
+function closeCalendar(){ overlayCal.classList.remove('open'); }
+
+function renderCalendar(){
+  const year = calViewDate.getFullYear();
+  const month = calViewDate.getMonth();
+  const monthLabel = calViewDate.toLocaleDateString('es-ES', { month:'long', year:'numeric' });
+  calTitle.textContent = monthLabel;
+
+  calGrid.innerHTML = '';
+  const dowNames = ['lun','mar','mié','jue','vie','sáb','dom'];
+  dowNames.forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'cal-dow';
+    el.textContent = d;
+    calGrid.appendChild(el);
+  });
+
+  const firstOfMonth = new Date(year, month, 1);
+  // lunes = 0 ... domingo = 6
+  const firstWeekday = (firstOfMonth.getDay() + 6) % 7;
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+  const today = new Date(); today.setHours(0,0,0,0);
+  const cells = [];
+
+  for (let i = firstWeekday - 1; i >= 0; i--) {
+    cells.push({ day: daysInPrevMonth - i, other: true, date: new Date(year, month - 1, daysInPrevMonth - i) });
+  }
+  for (let d = 1; d <= daysInMonth; d++) {
+    cells.push({ day: d, other: false, date: new Date(year, month, d) });
+  }
+  while (cells.length % 7 !== 0 || cells.length < 42) {
+    const nextDay = cells.length - (firstWeekday + daysInMonth) + 1;
+    cells.push({ day: nextDay, other: true, date: new Date(year, month + 1, nextDay) });
+  }
+
+  cells.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'cal-day' + (c.other ? ' other' : '');
+    if (c.date.getTime() === today.getTime()) el.classList.add('today');
+    if (c.date.getTime() === currentDate.getTime()) el.classList.add('selected');
+    el.textContent = c.day;
+    el.addEventListener('click', () => {
+      currentDate = new Date(c.date);
+      currentDate.setHours(0,0,0,0);
+      loadDay();
+      closeCalendar();
+    });
+    calGrid.appendChild(el);
+  });
+}
+
+document.getElementById('openCalBtn').addEventListener('click', openCalendar);
+document.getElementById('calCancelBtn').addEventListener('click', closeCalendar);
+overlayCal.addEventListener('click', (e) => { if (e.target === overlayCal) closeCalendar(); });
+document.getElementById('calPrev').addEventListener('click', () => {
+  calViewDate = new Date(calViewDate.getFullYear(), calViewDate.getMonth() - 1, 1);
+  renderCalendar();
+});
+document.getElementById('calNext').addEventListener('click', () => {
+  calViewDate = new Date(calViewDate.getFullYear(), calViewDate.getMonth() + 1, 1);
+  renderCalendar();
+});
+
+// ---- historial de pacientes: buscar todas las citas de un paciente ----
+const overlayHist = document.getElementById('overlayHist');
+const histInput = document.getElementById('histInput');
+const histList = document.getElementById('histList');
+let allCitasCache = null; // se llena al abrir el historial
+
+function normalize(s){
+  return (s || '').toString().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+}
+
+async function openHistory(){
+  histInput.value = '';
+  histList.innerHTML = '<div class="hist-empty">Cargando citas…</div>';
+  overlayHist.classList.add('open');
+  setTimeout(() => histInput.focus(), 50);
+  try {
+    allCitasCache = await window.dbGetAllCitas();
+  } catch (e) {
+    allCitasCache = [];
+    histList.innerHTML = '<div class="hist-empty">No se pudo cargar el historial.</div>';
+    return;
+  }
+  renderHistory();
+}
+function closeHistory(){ overlayHist.classList.remove('open'); }
+
+function renderHistory(){
+  const term = normalize(histInput.value);
+  if (!allCitasCache || allCitasCache.length === 0) {
+    histList.innerHTML = '<div class="hist-empty">Todavía no hay citas registradas.</div>';
+    return;
+  }
+  let matches = allCitasCache;
+  if (term) {
+    matches = allCitasCache.filter(c => normalize(c.paciente).includes(term));
+  }
+  // Más recientes primero (por fecha y luego por hora)
+  matches = matches.slice().sort((a, b) => {
+    if (a.fecha !== b.fecha) return a.fecha < b.fecha ? 1 : -1;
+    const ma = Number((a.slot || '').split('-')[0]) || 0;
+    const mb = Number((b.slot || '').split('-')[0]) || 0;
+    return mb - ma;
+  });
+
+  if (matches.length === 0) {
+    histList.innerHTML = '<div class="hist-empty">No se encontraron citas con ese nombre.</div>';
+    return;
+  }
+
+  histList.innerHTML = '';
+  matches.forEach(c => {
+    const [minuteStr, consult] = (c.slot || '').split('-');
+    const minute = Number(minuteStr);
+    const [y, mo, d] = c.fecha.split('-').map(Number);
+    const fechaObj = new Date(y, mo - 1, d);
+    const fechaLabel = fechaObj.toLocaleDateString('es-ES', { day:'numeric', month:'short', year:'numeric' });
+    const color = colorForName(c.paciente);
+
+    const item = document.createElement('div');
+    item.className = 'hist-item';
+    item.innerHTML = `
+      <div class="avatar" style="background:${color}">${escapeHtml(initialsFor(c.paciente))}</div>
+      <div class="hist-main">
+        <div class="hist-name">${escapeHtml(c.paciente)}</div>
+        <div class="hist-sub">${escapeHtml(c.tipo === 'Otros' && c.otro ? c.otro : c.tipo)} · consultorio ${consult}</div>
+      </div>
+      <div class="hist-date">${fechaLabel}<br>${minutesToLabel(minute)}</div>
+    `;
+    item.addEventListener('click', () => {
+      currentDate = fechaObj;
+      currentDate.setHours(0,0,0,0);
+      loadDay();
+      closeHistory();
+    });
+    histList.appendChild(item);
+  });
+}
+
+document.getElementById('openHistBtn').addEventListener('click', openHistory);
+document.getElementById('histCancelBtn').addEventListener('click', closeHistory);
+overlayHist.addEventListener('click', (e) => { if (e.target === overlayHist) closeHistory(); });
+histInput.addEventListener('input', renderHistory);
 
 function waitForFirebase(cb){
   if (window.firebaseReady) return cb();
