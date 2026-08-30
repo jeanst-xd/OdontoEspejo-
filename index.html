@@ -91,6 +91,10 @@
     --danger:#993C1D;
     --danger-bg:#FAECE7;
     --empty:#F1F0F9;
+    --ok:#2E7D32;
+    --ok-bg:#E7F3E8;
+    --bad:#C62828;
+    --bad-bg:#FBE9E9;
   }
   *{box-sizing:border-box;}
   body{
@@ -153,6 +157,15 @@
   .hist-item .hist-name{font-size:13px;font-weight:700;color:var(--ink);}
   .hist-item .hist-sub{font-size:11px;color:var(--sub);}
   .hist-item .hist-date{font-size:11px;color:var(--sub);text-align:right;white-space:nowrap;}
+  .hist-item.estado-asistio{box-shadow:0 0 0 2px var(--ok) inset;background:var(--ok-bg);}
+  .hist-item.estado-no_asistio{box-shadow:0 0 0 2px var(--bad) inset;background:var(--bad-bg);}
+  .hist-back{font-size:13px;color:var(--c2);font-weight:700;padding:6px 8px 14px;cursor:pointer;}
+  .hist-back:active{opacity:.6;}
+  .hist-patient-title{font-size:15px;font-weight:700;margin:2px 0 10px;}
+  .estado-row{display:flex;gap:8px;}
+  .estado-row .chip{flex:1;text-align:center;}
+  .estado-row .chip.sel.ok{background:var(--ok);border-color:var(--ok);color:#fff;}
+  .estado-row .chip.sel.bad{background:var(--bad);border-color:var(--bad);color:#fff;}
   .legend{display:flex;gap:14px;margin:2px 0 14px;font-size:12px;color:var(--sub);}
   .legend span{display:inline-flex;align-items:center;gap:6px;}
   .dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
@@ -175,6 +188,11 @@
   .cell:active{transform:scale(0.97);}
   .cell.filled.c1{background:var(--c1-bg);border-color:var(--c1-bd);}
   .cell.filled.c2{background:var(--c2-bg);border-color:var(--c2-bd);}
+  .cell.estado-asistio{box-shadow:0 0 0 2px var(--ok) inset;}
+  .cell.estado-no_asistio{box-shadow:0 0 0 2px var(--bad) inset;}
+  .estado-badge{font-size:10px;font-weight:700;margin-top:1px;}
+  .estado-badge.ok{color:var(--ok);}
+  .estado-badge.bad{color:var(--bad);}
   .cell .name{font-size:13px;font-weight:700;color:var(--ink);line-height:1.25;}
   .cell.filled.c1 .name{color:#083B2F;}
   .cell.filled.c2 .name{color:#26215C;}
@@ -304,7 +322,16 @@
 
     <div class="field">
       <label for="pacienteInput">Paciente (nombre o apellido)</label>
-      <input type="text" id="pacienteInput" placeholder="Ej. García" maxlength="40">
+      <input type="text" id="pacienteInput" placeholder="Ej. García" maxlength="40" list="patientDatalist" autocomplete="off">
+      <datalist id="patientDatalist"></datalist>
+    </div>
+
+    <div class="field" id="estadoField" style="display:none;">
+      <label>¿Vino a su cita?</label>
+      <div class="estado-row">
+        <div class="chip" data-estado="asistio">✅ Sí vino</div>
+        <div class="chip" data-estado="no_asistio">❌ No vino</div>
+      </div>
     </div>
 
     <div class="field">
@@ -365,11 +392,11 @@
   <div class="sheet">
     <div class="closebar"></div>
     <h2>Historial de pacientes</h2>
-    <div class="subhead">Busca por nombre o apellido para ver todas sus citas</div>
+    <div class="subhead">Todos tus pacientes, en orden alfabético</div>
 
-    <div class="field">
-      <label for="histInput">Paciente</label>
-      <input type="text" id="histInput" placeholder="Ej. Juan Céspedes" maxlength="40">
+    <div class="field" id="histInputField">
+      <label for="histInput">Buscar paciente</label>
+      <input type="text" id="histInput" placeholder="Ej. Kiara Tuesta" maxlength="40">
     </div>
 
     <div class="hist-list" id="histList"></div>
@@ -409,6 +436,7 @@ let dayData = {}; // { "540-1": {paciente, tipo, otro} }  key = minute-consultor
 let editingKey = null;
 let selectedConsult = null;
 let selectedTipo = null;
+let selectedEstado = null;
 
 const statusEl = document.getElementById('status');
 const gridEl = document.getElementById('grid');
@@ -417,6 +445,45 @@ const overlay = document.getElementById('overlay');
 function setStatus(t){ statusEl.textContent = t; }
 
 let unsubscribeDay = null;
+let citasCache = null; // todas las citas de todas las fechas, para autocompletar y para el historial
+
+function normalize(s){
+  return (s || '').toString().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+}
+
+function uniquePatientNames(){
+  const map = new Map(); // normalizado -> nombre tal como se escribió la primera vez
+  (citasCache || []).forEach(c => {
+    const norm = normalize(c.paciente);
+    if (!norm) return;
+    if (!map.has(norm)) map.set(norm, c.paciente);
+  });
+  return Array.from(map.values()).sort((a, b) => normalize(a).localeCompare(normalize(b), 'es'));
+}
+
+async function loadCitasCache(){
+  try {
+    citasCache = await window.dbGetAllCitas();
+  } catch (e) {
+    citasCache = citasCache || [];
+  }
+  refreshPatientDatalist();
+}
+
+function refreshPatientDatalist(){
+  const datalist = document.getElementById('patientDatalist');
+  if (!datalist) return;
+  const names = uniquePatientNames();
+  datalist.innerHTML = names.map(n => `<option value="${escapeHtml(n)}"></option>`).join('');
+}
+
+function addPatientToDatalist(name){
+  // agrega localmente sin esperar una relectura completa, para que la sugerencia
+  // esté disponible de inmediato la próxima vez que se agende
+  if (!citasCache) citasCache = [];
+  citasCache.push({ paciente: name });
+  refreshPatientDatalist();
+}
 
 function loadDay(){
   setStatus('cargando…');
@@ -509,11 +576,13 @@ function renderGrid(){
     [1,2].forEach(consult => {
       const k = m + '-' + consult;
       const data = dayData[k];
+      const estadoClass = data && data.estado === 'asistio' ? ' estado-asistio' : (data && data.estado === 'no_asistio' ? ' estado-no_asistio' : '');
       const cell = document.createElement('div');
-      cell.className = 'cell' + (data ? ' filled c'+consult : '');
+      cell.className = 'cell' + (data ? ' filled c'+consult : '') + estadoClass;
       if (data) {
         const color = colorForName(data.paciente);
-        cell.innerHTML = `<div class="cellrow"><div class="avatar" style="background:${color}">${escapeHtml(initialsFor(data.paciente))}</div><div><div class="name">${escapeHtml(data.paciente)}</div><div class="tipo">${escapeHtml(data.tipo === 'Otros' && data.otro ? data.otro : data.tipo)}</div></div></div>`;
+        const estadoBadge = data.estado === 'asistio' ? '<div class="estado-badge ok">Asistió</div>' : (data.estado === 'no_asistio' ? '<div class="estado-badge bad">No asistió</div>' : '');
+        cell.innerHTML = `<div class="cellrow"><div class="avatar" style="background:${color}">${escapeHtml(initialsFor(data.paciente))}</div><div><div class="name">${escapeHtml(data.paciente)}</div><div class="tipo">${escapeHtml(data.tipo === 'Otros' && data.otro ? data.otro : data.tipo)}</div>${estadoBadge}</div></div>`;
       } else {
         cell.innerHTML = `<div class="plus">+</div>`;
       }
@@ -540,11 +609,13 @@ const otroField = document.getElementById('otroField');
 const otroInput = document.getElementById('otroInput');
 const errMsg = document.getElementById('errMsg');
 const deleteBtn = document.getElementById('deleteBtn');
+const estadoField = document.getElementById('estadoField');
 
 function openSheet(minute, consult, data){
   editingKey = minute + '-' + consult;
   selectedConsult = consult;
   selectedTipo = data ? data.tipo : null;
+  selectedEstado = data && data.estado ? data.estado : null;
   errMsg.classList.remove('show');
 
   sheetTitle.textContent = data ? 'Editar cita' : 'Nueva cita';
@@ -561,8 +632,18 @@ function openSheet(minute, consult, data){
     el.classList.toggle('sel', el.dataset.tipo === selectedTipo);
   });
 
+  // el estado (asistió / no asistió) solo se puede marcar en una cita ya registrada
+  estadoField.style.display = data ? 'block' : 'none';
+  document.querySelectorAll('[data-estado]').forEach(el => {
+    const isSel = el.dataset.estado === selectedEstado;
+    el.classList.toggle('sel', isSel);
+    el.classList.toggle('ok', el.dataset.estado === 'asistio');
+    el.classList.toggle('bad', el.dataset.estado === 'no_asistio');
+  });
+
   deleteBtn.style.display = data ? 'block' : 'none';
   overlay.classList.add('open');
+  refreshPatientDatalist();
   setTimeout(() => pacienteInput.focus(), 50);
 }
 
@@ -585,6 +666,14 @@ document.querySelectorAll('[data-tipo]').forEach(el => {
     el.classList.add('sel');
     otroField.style.display = (selectedTipo === 'Otros') ? 'block' : 'none';
     if (selectedTipo === 'Otros') setTimeout(() => otroInput.focus(), 50);
+  });
+});
+document.querySelectorAll('[data-estado]').forEach(el => {
+  el.addEventListener('click', () => {
+    // toca de nuevo el mismo estado para quitarlo
+    selectedEstado = (selectedEstado === el.dataset.estado) ? null : el.dataset.estado;
+    document.querySelectorAll('[data-estado]').forEach(c => c.classList.remove('sel'));
+    if (selectedEstado) el.classList.add('sel');
   });
 });
 
@@ -627,11 +716,13 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
   const nuevaCita = {
     paciente,
     tipo: selectedTipo,
-    otro: selectedTipo === 'Otros' ? otroInput.value.trim() : ''
+    otro: selectedTipo === 'Otros' ? otroInput.value.trim() : '',
+    estado: selectedEstado || ''
   };
 
   if (newKey !== editingKey) await deleteSlot(editingKey);
   await saveSlot(newKey, nuevaCita);
+  addPatientToDatalist(paciente);
   closeSheet();
 });
 
@@ -733,25 +824,27 @@ document.getElementById('calNext').addEventListener('click', () => {
   renderCalendar();
 });
 
-// ---- historial de pacientes: buscar todas las citas de un paciente ----
+// ---- historial de pacientes: lista alfabética -> ficha única por paciente ----
 const overlayHist = document.getElementById('overlayHist');
 const histInput = document.getElementById('histInput');
+const histInputField = document.getElementById('histInputField');
 const histList = document.getElementById('histList');
-let allCitasCache = null; // se llena al abrir el historial
-
-function normalize(s){
-  return (s || '').toString().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
-}
+let histView = 'list'; // 'list' = todos los pacientes, 'detail' = citas de un paciente
+let histSelectedPatient = null;
 
 async function openHistory(){
   histInput.value = '';
-  histList.innerHTML = '<div class="hist-empty">Cargando citas…</div>';
+  histInput.placeholder = 'Ej. Apellidos y Nombres';
+  histView = 'list';
+  histSelectedPatient = null;
+  histList.innerHTML = '<div class="hist-empty">Cargando pacientes…</div>';
   overlayHist.classList.add('open');
   setTimeout(() => histInput.focus(), 50);
   try {
-    allCitasCache = await window.dbGetAllCitas();
+    citasCache = await window.dbGetAllCitas();
+    refreshPatientDatalist();
   } catch (e) {
-    allCitasCache = [];
+    citasCache = citasCache || [];
     histList.innerHTML = '<div class="hist-empty">No se pudo cargar el historial.</div>';
     return;
   }
@@ -760,43 +853,96 @@ async function openHistory(){
 function closeHistory(){ overlayHist.classList.remove('open'); }
 
 function renderHistory(){
-  const term = normalize(histInput.value);
-  if (!allCitasCache || allCitasCache.length === 0) {
-    histList.innerHTML = '<div class="hist-empty">Todavía no hay citas registradas.</div>';
+  if (histView === 'detail' && histSelectedPatient) {
+    histInputField.style.display = 'none';
+    renderPatientDetail(histSelectedPatient);
     return;
   }
-  let matches = allCitasCache;
-  if (term) {
-    matches = allCitasCache.filter(c => normalize(c.paciente).includes(term));
+  histInputField.style.display = 'block';
+  if (!citasCache || citasCache.length === 0) {
+    histList.innerHTML = '<div class="hist-empty">Todavía no hay pacientes registrados.</div>';
+    return;
   }
-  // Más recientes primero (por fecha y luego por hora)
-  matches = matches.slice().sort((a, b) => {
+  const term = normalize(histInput.value);
+  let names = uniquePatientNames();
+  if (term) names = names.filter(n => normalize(n).includes(term));
+
+  if (names.length === 0) {
+    histList.innerHTML = '<div class="hist-empty">No se encontraron pacientes con ese nombre.</div>';
+    return;
+  }
+
+  histList.innerHTML = '';
+  names.forEach(name => {
+    const color = colorForName(name);
+    const citasDelPaciente = citasCache.filter(c => normalize(c.paciente) === normalize(name)).length;
+    const item = document.createElement('div');
+    item.className = 'hist-item';
+    item.innerHTML = `
+      <div class="avatar" style="background:${color}">${escapeHtml(initialsFor(name))}</div>
+      <div class="hist-main">
+        <div class="hist-name">${escapeHtml(name)}</div>
+        <div class="hist-sub">${citasDelPaciente} cita${citasDelPaciente === 1 ? '' : 's'} registrada${citasDelPaciente === 1 ? '' : 's'}</div>
+      </div>
+    `;
+    item.addEventListener('click', () => {
+      histSelectedPatient = name;
+      histView = 'detail';
+      histInput.value = '';
+      renderHistory();
+    });
+    histList.appendChild(item);
+  });
+}
+
+function renderPatientDetail(name){
+  const term = normalize(name);
+  let citas = (citasCache || []).filter(c => normalize(c.paciente) === term);
+  // más recientes primero (por fecha y luego por hora)
+  citas = citas.slice().sort((a, b) => {
     if (a.fecha !== b.fecha) return a.fecha < b.fecha ? 1 : -1;
     const ma = Number((a.slot || '').split('-')[0]) || 0;
     const mb = Number((b.slot || '').split('-')[0]) || 0;
     return mb - ma;
   });
 
-  if (matches.length === 0) {
-    histList.innerHTML = '<div class="hist-empty">No se encontraron citas con ese nombre.</div>';
+  histList.innerHTML = '';
+
+  const back = document.createElement('div');
+  back.className = 'hist-back';
+  back.textContent = '‹ Volver a todos los pacientes';
+  back.addEventListener('click', () => {
+    histView = 'list';
+    histSelectedPatient = null;
+    renderHistory();
+  });
+  histList.appendChild(back);
+
+  const title = document.createElement('div');
+  title.className = 'hist-patient-title';
+  title.textContent = name;
+  histList.appendChild(title);
+
+  if (citas.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'hist-empty';
+    empty.textContent = 'Este paciente no tiene citas registradas.';
+    histList.appendChild(empty);
     return;
   }
 
-  histList.innerHTML = '';
-  matches.forEach(c => {
+  citas.forEach(c => {
     const [minuteStr, consult] = (c.slot || '').split('-');
     const minute = Number(minuteStr);
     const [y, mo, d] = c.fecha.split('-').map(Number);
     const fechaObj = new Date(y, mo - 1, d);
     const fechaLabel = fechaObj.toLocaleDateString('es-ES', { day:'numeric', month:'short', year:'numeric' });
-    const color = colorForName(c.paciente);
+    const estadoClass = c.estado === 'asistio' ? ' estado-asistio' : (c.estado === 'no_asistio' ? ' estado-no_asistio' : '');
 
     const item = document.createElement('div');
-    item.className = 'hist-item';
+    item.className = 'hist-item' + estadoClass;
     item.innerHTML = `
-      <div class="avatar" style="background:${color}">${escapeHtml(initialsFor(c.paciente))}</div>
       <div class="hist-main">
-        <div class="hist-name">${escapeHtml(c.paciente)}</div>
         <div class="hist-sub">${escapeHtml(c.tipo === 'Otros' && c.otro ? c.otro : c.tipo)} · consultorio ${consult}</div>
       </div>
       <div class="hist-date">${fechaLabel}<br>${minutesToLabel(minute)}</div>
@@ -822,6 +968,7 @@ function waitForFirebase(cb){
 }
 waitForFirebase(() => {
   loadDay(); // se conecta una vez y queda escuchando cambios en tiempo real
+  loadCitasCache(); // para el autocompletado de pacientes y el historial
 });
 </script>
 </body>
