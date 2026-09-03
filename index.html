@@ -45,7 +45,7 @@ const AUTH_KEY='odonto_local_auth_v1',REQUEST_KEY='odonto_access_requests',EXTRA
 const BASE_USERS=[
  {id:'jaquelin',name:'Dra. Jaquelin Espejo Evaristo',role:'Gerenta · Odontóloga',initials:'JE'},
  {id:'deysy',name:'Deysy Gomez',role:'Asistente',initials:'DG'},
- {id:'jeanfranco',name:'Jeanfranco Santa Cruz',role:'Odontólogo · Administrador de accesos',initials:'JS',owner:true}
+ {id:'jeanfranco',name:'Jeanfranco Santa Cruz',role:'Odontonene',initials:'JS',owner:true}
 ];
 function authorizedUsers(){return BASE_USERS}
 const read=(k,f=[])=>{try{return JSON.parse(localStorage.getItem(KEYS[k]))??f}catch{return f}},write=(k,v)=>localStorage.setItem(KEYS[k],JSON.stringify(v));
