@@ -1,0 +1,35 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function activeStaff() {
+      return signedIn()
+        && request.auth.uid in [
+          'JSjKcPKnCGVdo4H59bx2Go58qiF2',
+          'exyjmX410QRdhceNsw8ATgDgUMW2',
+          'TVSKBKSb15a8ZyFXLZjX7HNnh7B3'
+        ];
+    }
+
+    function canManageAgenda() {
+      return activeStaff();
+    }
+
+    match /citas/{date}/slots/{slotId} {
+      allow read, create, update, delete: if canManageAgenda();
+    }
+
+    match /citas_index/{appointmentId} {
+      allow read, create, update, delete: if canManageAgenda();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
