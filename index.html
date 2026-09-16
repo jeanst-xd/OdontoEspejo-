@@ -220,6 +220,115 @@ body{background:radial-gradient(ellipse at 85% 0%,#cee3df,transparent 58%),radia
 .dashboard-mode .ref-visit{padding:10px 0}
 }
 .ref-lower h3 span{float:right;font-size:12px;font-weight:650;color:#75538d}
+</style><style id="welcome-violet-approved">@font-face{font-family:Bloques;src:url('Bungee-Regular.ttf') format('truetype');font-display:swap}
+.login-screen{margin:0;min-height:100dvh;font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:#352b45;background:radial-gradient(ellipse at 12% 90%,#b7dbd8,transparent 55%),radial-gradient(ellipse at 90% 70%,#c9b9ec,transparent 55%),linear-gradient(145deg,#eeedf1,#e4deec);background-attachment:fixed}
+.login-screen button,body:has(.login-screen:not(.hidden)) input{font:inherit}
+.login-screen button{cursor:pointer}
+.login-screen .login-panel{max-width:1050px;margin:auto;padding:26px 34px 22px;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.login-screen .welcome-logo{display:block;width:300px;max-width:70vw;mix-blend-mode:multiply;margin:0 auto 28px}
+.login-screen .welcome-heading{font-family:Bloques,Impact,sans-serif;font-weight:400;font-size:clamp(32px,4.4vw,60px);line-height:1.13;text-align:center;letter-spacing:-1.8px;margin:0 0 32px;color:#352b45}
+.login-screen .welcome-heading span{display:block;color:#67439b;margin-top:3px}
+.login-screen .welcome-profiles{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
+.login-screen .welcome-profile{position:relative;display:flex;flex-direction:column;align-items:flex-start;text-align:left;padding:25px 24px 21px;border:1px solid #ffffffeb;border-radius:28px;background:linear-gradient(145deg,#ffffffc4,#ffffff72);color:#352b45;box-shadow:0 14px 38px #62497b0a;transition:transform .2s,border-color .2s,box-shadow .2s;min-height:265px}
+.login-screen .welcome-profile:hover,.login-screen .welcome-profile:focus-visible{transform:translateY(-4px);border-color:#218d85;box-shadow:0 18px 35px #3c81771a;outline:0}
+.login-screen .portrait{display:block;width:112px;height:112px;border-radius:26px;overflow:hidden;background:#e8dfef;border:3px solid #ffffffd9;margin-bottom:18px;box-shadow:0 8px 20px #4c2f6b14}
+.login-screen .portrait img{width:100%;height:100%;object-fit:cover}
+.login-screen .doctora img{transform:scale(1.55);transform-origin:51% 28%}
+.login-screen .jean img{object-position:50% 24%;filter:brightness(1.5);transform:scale(1.1)}
+.login-screen .deysy img{object-position:50% 24%;transform:scale(1.3);transform-origin:50% 32%}
+.login-screen .welcome-profile h2{font-size:16px;font-weight:750;line-height:1.4;margin:0 0 4px;letter-spacing:-.2px;min-height:23px}
+.login-screen .welcome-profile p{font-size:13px;color:#897995;margin:0 0 19px}
+.login-screen .enter{margin-top:auto;font-size:12px;font-weight:700;color:#75518f;display:flex;align-items:center;gap:7px}
+.login-screen .enter svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.login-screen .welcome-profile:hover .enter{color:#218d85}
+.login-screen .request{margin-top:18px;background:none;border:0;color:#816992;font-size:12px;text-decoration:underline;text-underline-offset:4px;padding:8px 12px}
+body:has(.login-screen:not(.hidden)) .modal{position:fixed;inset:0;background:#21152f55;backdrop-filter:blur(10px);padding:20px;display:none;align-items:center;justify-content:center;z-index:10}
+body:has(.login-screen:not(.hidden)) .modal.open{display:flex}
+body:has(.login-screen:not(.hidden)) .dialog{width:100%;max-width:430px;background:#fcfaff;border:1px solid white;border-radius:28px;padding:28px;box-shadow:0 25px 90px #34214035}
+body:has(.login-screen:not(.hidden)) .dialog h2{font-size:21px;margin:0 0 5px}
+body:has(.login-screen:not(.hidden)) .dialog p{color:#897995;font-size:13px;margin:0 0 22px}
+body:has(.login-screen:not(.hidden)) label{display:block;font-size:12px;font-weight:650;margin:14px 0 6px;color:#786582}
+body:has(.login-screen:not(.hidden)) input{width:100%;border:1px solid #e1d9e8;border-radius:13px;background:white;padding:11px 13px;color:#352b45}
+body:has(.login-screen:not(.hidden)) .actions{display:flex;justify-content:flex-end;gap:10px;margin-top:24px}
+body:has(.login-screen:not(.hidden)) .actions button{border-radius:22px;border:1px solid #e3daec;background:#f0e9f5;color:#564264;padding:10px 16px;font-size:13px;font-weight:650}
+body:has(.login-screen:not(.hidden)) .actions .primary{background:#684891;color:white;border-color:#684891}
+@media(min-width:1000px) and (max-height:700px){.login-screen .login-panel{padding-top:18px;padding-bottom:14px}
+.login-screen .welcome-logo{width:260px;margin-bottom:18px}
+.login-screen .welcome-heading{font-size:clamp(38px,4.1vw,55px);margin-bottom:24px}
+.login-screen .welcome-profile{padding:20px 22px;min-height:248px}
+.login-screen .portrait{width:100px;height:100px;margin-bottom:15px}
+.login-screen .request{margin-top:12px}
+}
+@media(max-width:760px){.login-screen .login-panel{padding:28px 20px}
+.login-screen .welcome-logo{width:250px;margin-bottom:26px}
+.login-screen .welcome-heading{font-size:clamp(26px,6.7vw,42px);letter-spacing:-.8px;line-height:1.2;margin-bottom:25px}
+.login-screen .welcome-profiles{grid-template-columns:1fr;max-width:440px;gap:12px}
+.login-screen .welcome-profile{display:grid;grid-template-columns:84px minmax(0,1fr);column-gap:17px;padding:19px;min-height:137px;border-radius:24px}
+.login-screen .portrait{grid-column:1;grid-row:1/4;width:84px;height:94px;margin:0;border-radius:20px}
+.login-screen .welcome-profile h2{grid-column:2;align-self:end;font-size:15px}
+.login-screen .welcome-profile p{grid-column:2;margin:0;font-size:12px}
+.login-screen .enter{grid-column:2;align-self:start;margin-top:9px;font-size:11px}
+.login-screen .request{margin-top:16px}
+}
+@media(prefers-reduced-motion:reduce){.login-screen .welcome-profile{transition:none}
+}
+.login-screen{color:#faf5ff;background:#0e071f;position:relative;isolation:isolate}
+.login-screen::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(10,4,22,.12),rgba(10,4,22,.24)),url('fondo-violeta-panoramico.webp') center/cover no-repeat}
+.login-screen .login-panel{max-width:1110px;padding:26px 38px}
+.login-screen .welcome-logo{filter:grayscale(1) invert(1) brightness(1.8);mix-blend-mode:screen;width:290px;margin-bottom:24px}
+.login-screen .welcome-heading{color:#f8f2ff;text-shadow:0 4px 35px #10062599;letter-spacing:-1.5px;margin-bottom:30px;font-size:clamp(32px,4.2vw,57px)}
+.login-screen .welcome-heading span{background:linear-gradient(100deg,#e5c2ff,#c1a4f8 45%,#eed5a1);background-clip:text;-webkit-background-clip:text;color:transparent}
+.login-screen .welcome-profiles{gap:20px}
+.login-screen .welcome-profile{padding:24px;border-radius:27px;min-height:286px;color:#f9f4ff;background:linear-gradient(145deg,rgba(61,39,91,.68),rgba(24,12,46,.83));backdrop-filter:blur(17px);-webkit-backdrop-filter:blur(17px);border:1px solid rgba(224,195,255,.24);box-shadow:0 18px 50px #06021045,inset 0 1px #ffffff0c}
+.login-screen .welcome-profile::before{content:'';position:absolute;left:24px;right:24px;top:0;height:1px;background:linear-gradient(90deg,transparent,#ead0a677,transparent)}
+.login-screen .welcome-profile:hover,.login-screen .welcome-profile:focus-visible{border-color:#e8cd9b;box-shadow:0 22px 55px #05010e60,0 0 0 3px #ead0a60e;transform:translateY(-4px)}
+.login-screen .portrait{border-color:#dec3a76b;box-shadow:0 8px 25px #07011155;border-radius:25px;width:108px;height:108px;margin-bottom:18px}
+.login-screen .welcome-profile h2{font-size:16px;font-weight:650;min-height:23px}
+.login-screen .welcome-profile p{color:#c6b4dd;font-size:12px;margin-bottom:22px}
+.login-screen .enter{display:flex;justify-content:center;align-items:center;gap:9px;width:100%;min-height:42px;border-radius:13px;background:linear-gradient(115deg,#f0dfba,#d8ba87);border:1px solid #ffebc977;color:#2d173e;font-size:12px;font-weight:750;box-shadow:0 5px 16px #09031135;letter-spacing:.1px}
+.login-screen .welcome-profile:hover .enter{color:#2d173e;background:linear-gradient(115deg,#fff0ce,#e6c895)}
+.login-screen .enter svg{width:16px;height:16px}
+.login-screen .request{color:#cec0e1;text-decoration:none;border:1px solid #dac4ff27;border-radius:22px;padding:7px 15px;background:#21133680;font-size:11px;margin-top:19px}
+.login-screen .request:hover{border-color:#e3c694;color:#f1dfbb}
+body:has(.login-screen:not(.hidden)) .modal{background:#080214a8;backdrop-filter:blur(15px)}
+body:has(.login-screen:not(.hidden)) .dialog{background:linear-gradient(140deg,#38234d,#1c102d);border-color:#dec5f13b;color:#f9f4ff;box-shadow:0 25px 90px #0009}
+body:has(.login-screen:not(.hidden)) .dialog p{color:#c6b4dd}
+body:has(.login-screen:not(.hidden)) .dialog label{color:#d5c5e6}
+body:has(.login-screen:not(.hidden)) .dialog input{background:#10091b66;color:#f8f2ff;border-color:#d9bdf12b}
+body:has(.login-screen:not(.hidden)) .dialog input:focus{outline:2px solid #d8bc8f;outline-offset:1px}
+body:has(.login-screen:not(.hidden)) .actions button{background:#ffffff09;border-color:#ccb4e237;color:#e7d9f4}
+body:has(.login-screen:not(.hidden)) .actions .primary{background:linear-gradient(115deg,#f0dfba,#d8ba87);color:#2d173e;border-color:#e7ca97}
+@media(min-width:1000px) and (max-height:700px){.login-screen .login-panel{padding:18px 34px 14px}
+.login-screen .welcome-logo{width:250px;margin-bottom:18px}
+.login-screen .welcome-heading{font-size:clamp(36px,4vw,52px);margin-bottom:24px}
+.login-screen .welcome-profile{min-height:264px;padding:20px 22px}
+.login-screen .portrait{width:94px;height:94px;margin-bottom:14px}
+.login-screen .enter{min-height:39px}
+.login-screen .welcome-profile p{margin-bottom:17px}
+.login-screen .request{margin-top:13px}
+}
+@media(max-width:760px){.login-screen .login-panel{padding:25px 20px}
+.login-screen .welcome-logo{width:250px;margin-bottom:24px}
+.login-screen .welcome-heading{font-size:clamp(26px,6.7vw,42px);letter-spacing:-.8px;margin-bottom:25px}
+.login-screen .welcome-profiles{gap:12px}
+.login-screen .welcome-profile{padding:18px;grid-template-columns:80px minmax(0,1fr);column-gap:16px;min-height:149px;border-radius:23px}
+.login-screen .portrait{width:80px;height:104px;grid-row:1/4;margin:0;border-radius:19px}
+.login-screen .welcome-profile h2{font-size:14px;align-self:end}
+.login-screen .welcome-profile p{font-size:11px;margin:0 0 8px}
+.login-screen .enter{font-size:11px;min-height:33px;border-radius:10px;align-self:start;margin:0}
+.login-screen .request{margin-top:17px}
+.login-screen .welcome-profile:hover{transform:none}
+.login-screen::before{background-position:65% center}
+}
+
+.login-screen{position:fixed;inset:0;z-index:100;padding:0;overflow:auto}
+.login-screen .login-panel{text-align:initial;width:100%;box-shadow:none;background:transparent}
+.login-screen .welcome-logo{max-width:70vw}
+body{background:#d7c9e4;isolation:isolate}
+body::before{content:'';position:fixed;inset:-24px;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(236,226,247,.73),rgba(204,187,224,.72)),url('fondo-violeta-panoramico.webp') center/cover no-repeat;filter:blur(16px)}
+.side,.main{background-color:rgba(250,247,255,.64)}
+.ref-rail{background:rgba(248,243,254,.57);border-color:#ffffffc0}
+@media(max-width:760px){.login-screen .login-panel{max-width:none}.ref-rail{background:#f8f4fbea}}
 </style></head><body>
 <div class="app"><aside class="side"><div class="brand"><img class="brand-logo" src="logo-odontoespejo.svg" alt="OdontoEspejo, odontología especializada"><div class="brand-caption"><b>Panel clínico</b><span>Gestión integral</span></div></div><nav class="nav" id="nav" aria-label="Navegación principal"></nav><div class="user-menu"><span class="sync" id="sync" role="status">● Conectando…</span><button class="user-chip" onclick="logout()" title="Cerrar sesión"><span class="avatar" id="sessionAvatar">JE</span><span class="user-label" id="sessionName">Usuario</span><span>⌄</span></button></div><div class="sidefoot">Consultorio conectado<br><span id="clock"></span></div></aside><main class="main"><header class="top"><div><h1 id="viewTitle">Inicio</h1><p id="viewSub">Resumen de tu consultorio</p></div></header><section id="content"></section></main></div><nav class="mobilebar" id="mobileNav" aria-label="Navegación móvil"></nav>
 <section class="login-screen" id="loginScreen"><div class="login-panel"><img class="login-logo" src="logo-odontoespejo.svg" alt="OdontoEspejo"><h1>Bienvenido al panel clínico</h1><p>Selecciona tu perfil para ingresar de forma segura.</p><div class="profile-list" id="profileList"></div><div class="request-card"><button class="btn" style="width:100%" onclick="requestAccess()">Solicitar acceso</button></div></div><aside class="login-aside"><div class="login-aside-inner"><span class="pill confirmada">Acceso privado</span><h2>La gestión diaria de OdontoEspejo, en un solo lugar.</h2><p>Agenda, pacientes, odontograma, historia clínica y administración protegidos para el equipo autorizado.</p><div class="secure-list"><div class="secure-item"><b>Face ID o huella</b><br><small>Mediante passkeys al publicar con HTTPS.</small></div><div class="secure-item"><b>PIN de 6 dígitos</b><br><small>Alternativa personal para cada integrante.</small></div></div></div></aside></section>
@@ -231,8 +340,8 @@ const KEYS={patients:'odonto_patients',clinical:'odonto_clinical',payments:'odon
 const AUTH_KEY='odonto_local_auth_v1',REQUEST_KEY='odonto_access_requests',EXTRA_USERS_KEY='odonto_extra_users';
 const BASE_USERS=[
  {id:'jaquelin',name:'Dra. Jaquelin Espejo Evaristo',role:'Gerenta · Odontóloga',initials:'JE'},
- {id:'deysy',name:'Deysy Gomez',role:'Asistente',initials:'DG'},
- {id:'jeanfranco',name:'Jeanfranco Santa Cruz',role:'Odontonene',initials:'JS',owner:true}
+ {id:'deysy',name:'Deysy HG',role:'Asistente',initials:'DG'},
+ {id:'jeanfranco',name:'JEAN ST',role:'Odontonene',initials:'JS',owner:true}
 ];
 function authorizedUsers(){return BASE_USERS}
 const read=(k,f=[])=>{try{return JSON.parse(localStorage.getItem(KEYS[k]))??f}catch{return f}},write=(k,v)=>localStorage.setItem(KEYS[k],JSON.stringify(v));
@@ -248,7 +357,7 @@ function allowedNavs(){let allowed=ROLE_VIEWS[currentUser()?.role]||[];return na
 function toast(s){let t=$('#toast');t.textContent=s;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}function modal(html){$('#modalBody').innerHTML=html;$('#modal').classList.add('open')}function closeModal(){$('#modal').classList.remove('open')}$('#modal').onclick=e=>{if(e.target.id==='modal')closeModal()};
 let activeUser=null;
 function currentUser(){return activeUser}
-function showLogin(){if(activeUser)return enterApp(activeUser);$('#loginScreen').classList.remove('hidden');$('#profileList').innerHTML=authorizedUsers().map(u=>`<button class="profile-btn" onclick="loginUser('${u.id}')"><span class="avatar">${u.initials}</span><span><b>${esc(u.name)}</b><small>${esc(u.role)}</small></span></button>`).join('')}
+function showLogin(){if(activeUser)return enterApp(activeUser);$('#loginScreen').classList.remove('hidden');const portraits={jaquelin:['perfil-doctora-v1.webp','doctora'],deysy:['perfil-deysy-v1.webp','deysy'],jeanfranco:['perfil-jean-v1.webp','jean']};$('#profileList').innerHTML=authorizedUsers().map(u=>`<button class="welcome-profile" type="button" onclick="loginUser('${u.id}')"><span class="portrait ${portraits[u.id][1]}"><img src="${portraits[u.id][0]}" alt="${esc(u.name)}"></span><h2>${esc(u.name)}</h2><p>${esc(u.role)}</p><span class="enter">Acceder al panel <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></span></button>`).join('')}
 function loginUser(id){let selected=authorizedUsers().find(x=>x.id===id);modal(`<h2>Ingresar de forma segura</h2><p><b>${esc(selected.name)}</b><br><span class="meta">${esc(selected.role)}</span></p><form id="loginForm"><div class="field"><label>Correo autorizado</label><input name="email" type="email" autocomplete="username" required></div><div class="field" style="margin-top:12px"><label>PIN de 6 dígitos</label><input class="pin-input" name="password" type="password" inputmode="numeric" autocomplete="current-password" pattern="[0-9]{6}" minlength="6" maxlength="6" required></div><div class="actions"><button type="button" class="btn" onclick="closeModal()">Cancelar</button><button class="btn primary">Ingresar</button></div><p class="auth-note">La cuenta será verificada por Firebase. La sesión se cerrará al cerrar el navegador.</p></form>`);$('#loginForm').onsubmit=async e=>{e.preventDefault();let f=new FormData(e.target),button=e.submitter,password=String(f.get('password'));if(!/^\d{6}$/.test(password))return toast('El PIN debe tener exactamente 6 dígitos');button.disabled=true;button.textContent='Verificando…';try{let profile=await firebaseAuthApi.signIn(String(f.get('email')).trim(),password);if(profile.profileId!==id){await firebaseAuthApi.logout();throw new Error('El correo no corresponde al perfil seleccionado')}activeUser={...selected,...profile,owner:profile.role==='admin'};closeModal();enterApp(activeUser);await refreshAll();loadDay()}catch(err){toast(err.message==='El correo no corresponde al perfil seleccionado'?err.message:'Correo, PIN o autorización incorrectos');button.disabled=false;button.textContent='Ingresar'}}}
 function biometricInfo(){toast('Face ID y huella se habilitarán después de registrar las cuentas seguras.')}
 function enterApp(u){$('#loginScreen').classList.add('hidden');$('#sessionAvatar').textContent=u.initials;$('#sessionName').textContent=u.name;initNav();go('dashboard');if(!window.__syncStarting){window.__syncStarting=true;startDataSync().finally(()=>window.__syncStarting=false)}}async function logout(){if(state.unsub)state.unsub();stopDataSync();syncHashes={};activeUser=null;try{await firebaseAuthApi.logout()}catch{}$('#loginScreen').classList.remove('hidden');showLogin();toast('Sesión cerrada')}
@@ -297,7 +406,7 @@ function changeVisitPage(d){refVisitPage=Math.max(0,Math.min(Math.max(0,Math.cei
 function dashboard(){const a=refTodayAppointments(),att=a.filter(x=>x.estado==='asistio').length,pending=a.filter(x=>!x.estado||['pendiente','confirmada'].includes(x.estado)),date=new Date().toLocaleDateString('es-PE',{weekday:'long',day:'numeric',month:'long'}),income=state.payments.filter(x=>x.date===today()).reduce((s,x)=>s+Number(x.amount||0),0),views=allowedNavs().map(x=>x[0]);const tiles=[['agenda','Agenda','Organiza tus horarios'],['patients','Pacientes','Cada historia importa'],['payments','Pagos','Tus cuentas al día'],['reminders','Recordatorios','Mantén el contacto']].filter(x=>views.includes(x[0]));const matches=refMatchingVisits();refVisitPage=Math.min(refVisitPage,Math.max(0,Math.ceil(matches.length/3)-1));return `<div class="ref-layout"><aside class="ref-aside"><input class="ref-search" value="${esc(refVisitQuery)}" placeholder="Buscar cita de hoy…" aria-label="Buscar cita de hoy" oninput="refFilterVisits(this.value)"><h2>Tu agenda de hoy <span>${a.length} citas</span></h2><p class="ref-date">${esc(date)}</p><div class="ref-visits">${matches.length?matches.slice(refVisitPage*3,refVisitPage*3+3).map(({x,index:i})=>`<article class="ref-visit" data-visit-search="${esc(((x.paciente||'')+' '+treatment(x)).toLowerCase())}"><time>${mins(Number(x.slot?.split('-')[0]||0))}</time><b>${esc(x.paciente||'Cita')}</b><small>${esc(treatment(x))}</small><button onclick="refOpenVisit(${i})">Ver cita ↗</button></article>`).join(''):`<div class="ref-empty">${refVisitQuery?'No hay citas que coincidan con tu búsqueda.':'Tu agenda está libre hoy.<br>Puedes registrar tu primera cita.'}</div>`}</div><div class="visit-pages"><button onclick="changeVisitPage(-1)" aria-label="Citas anteriores" ${refVisitPage===0?'disabled':''}>‹</button><span>${matches.length?refVisitPage*3+1:0}–${Math.min(matches.length,refVisitPage*3+3)} de ${matches.length} citas</span><button onclick="changeVisitPage(1)" aria-label="Citas siguientes" ${(refVisitPage+1)*3>=matches.length?'disabled':''}>›</button></div><div class="ref-aside-footer">${pending.length} citas por atender<button class="btn" onclick="refOpenToday();openAppointment()">+ Nueva cita</button></div></aside><div class="ref-main"><section class="ref-hero ref-hero-full"><img class="ref-hero-art" src="portada-espacial-completa.webp" alt="Un gran día empieza con todo en orden. Las mascotas de OdontoEspejo exploran el espacio."><div class="ref-hero-copy"><small>BIENVENIDO A TU CONSULTORIO</small><h1>Un gran día empieza<br><span>con todo en orden.</span></h1><p>Tu equipo, tus pacientes y tu agenda. Conectados.</p><button onclick="refOpenToday()">Ver mi agenda ${refIcon('arrow')}</button></div><button class="ref-hero-image-link" onclick="refOpenToday()" aria-label="Ver mi agenda"></button></section><div class="ref-tiles">${tiles.map(([id,title,sub])=>`<button class="ref-tile" onclick="${id==='agenda'?'refOpenToday()':`go('${id}')`}"><span>${refIcon(id)}</span><b>${title}</b><small>${sub}</small>${refIcon('arrow')}</button>`).join('')}</div><div class="ref-stats"><div class="ref-stat"><strong>${a.length}</strong><span>Citas programadas hoy</span></div><div class="ref-stat"><strong>${att}</strong><span>Pacientes atendidos</span></div><div class="ref-stat"><strong>${pending.length}</strong><span>Atenciones pendientes</span></div></div><div class="ref-lower"><article><h3>Registro clínico</h3><p>Diagnósticos, tratamientos y evolución de tus pacientes.</p><button onclick="refOpenClinical('clinical')">Historia clínica ↗</button> · <button onclick="refOpenClinical('odontogram')">Odontograma ↗</button></article><article><h3>Ingresos del día <span>${fmt(income)}</span></h3><p>${fmt(income)} en pagos registrados.</p><button onclick="go('payments')">Ver movimientos ↗</button></article></div></div></div>`}
 document.querySelectorAll('.production-rail').forEach(x=>x.remove());
 document.querySelector('.brand').innerHTML='<div class="ref-brand"><img src="icono-odontoespejo.png" alt="">Odonto<em>Espejo</em></div>';
-const loginPanel=document.querySelector('.login-panel');const loginNav=document.createElement('div');loginNav.className='ref-login-nav';loginNav.innerHTML='<div class="ref-brand"><img src="icono-odontoespejo.png" alt="">Odonto<em>Espejo</em></div><p>Tu consultorio · Tu equipo</p><button type="button" onclick="document.querySelector(\'.profile-list\').scrollIntoView({behavior:\'smooth\'})">Ingresar ↗</button>';loginPanel.prepend(loginNav);loginPanel.querySelector('h1').innerHTML='Cuidar sonrisas.<br><em>Conectar a tu equipo.</em>';loginPanel.querySelector(':scope > p').textContent='Un espacio para organizar tu día y acompañar cada etapa de la atención.';
+const loginPanel=document.querySelector('.login-panel');loginPanel.innerHTML='<img class="welcome-logo" src="logo-bienvenida-v1.webp" alt="OdontoEspejo · Odontología especializada"><h1 class="welcome-heading">Tu Sonrisa,<span>Nuestra Especialidad.</span></h1><div class="welcome-profiles" id="profileList"></div><button class="request" type="button" onclick="requestAccess()">Solicitar acceso</button>';showLogin();
 document.addEventListener('click',e=>{if(!e.target.closest('.nav-more'))document.querySelectorAll('.nav-more[open]').forEach(d=>d.removeAttribute('open'))});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.nav-more[open]').forEach(d=>d.removeAttribute('open'))});
 
