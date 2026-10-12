@@ -337,7 +337,7 @@ body::before{content:'';position:fixed;inset:-24px;z-index:-1;pointer-events:non
 .ref-visit.orthodontics{margin:8px -7px;padding:12px 9px;border:1px solid rgba(103,69,152,.23);border-radius:15px;background:linear-gradient(135deg,rgba(117,82,171,.17),rgba(103,69,152,.08))}
 .ref-visit.orthodontics time,.ref-visit.orthodontics b{color:#674598}
 @media(prefers-reduced-motion:reduce){.slot,.ref-visit{transition:none!important}}
-</style></head><body>
+</style><link rel="stylesheet" href="spiegel-assistant.css"></head><body>
 <div class="app"><aside class="side"><div class="brand"><img class="brand-logo" src="logo-odontoespejo.svg" alt="OdontoEspejo, odontología especializada"><div class="brand-caption"><b>Panel clínico</b><span>Gestión integral</span></div></div><nav class="nav" id="nav" aria-label="Navegación principal"></nav><div class="user-menu"><span class="sync" id="sync" role="status">● Conectando…</span><button class="user-chip" onclick="logout()" title="Cerrar sesión"><span class="avatar" id="sessionAvatar">JE</span><span class="user-label" id="sessionName">Usuario</span><span>⌄</span></button></div><div class="sidefoot">Consultorio conectado<br><span id="clock"></span></div></aside><main class="main"><header class="top"><div><h1 id="viewTitle">Inicio</h1><p id="viewSub">Resumen de tu consultorio</p></div></header><section id="content"></section></main></div><nav class="mobilebar" id="mobileNav" aria-label="Navegación móvil"></nav>
 <section class="login-screen" id="loginScreen"><div class="login-panel"><img class="login-logo" src="logo-odontoespejo.svg" alt="OdontoEspejo"><h1>Bienvenido al panel clínico</h1><p>Selecciona tu perfil para ingresar de forma segura.</p><div class="profile-list" id="profileList"></div><div class="request-card"><button class="btn" style="width:100%" onclick="requestAccess()">Solicitar acceso</button></div></div><aside class="login-aside"><div class="login-aside-inner"><span class="pill confirmada">Acceso privado</span><h2>La gestión diaria de OdontoEspejo, en un solo lugar.</h2><p>Agenda, pacientes, odontograma, historia clínica y administración protegidos para el equipo autorizado.</p><div class="secure-list"><div class="secure-item"><b>Face ID o huella</b><br><small>Mediante passkeys al publicar con HTTPS.</small></div><div class="secure-item"><b>PIN de 6 dígitos</b><br><small>Alternativa personal para cada integrante.</small></div></div></div></aside></section>
 <div class="modal" id="modal"><div class="dialog"><div id="modalBody"></div></div></div><div class="toast" id="toast"></div>
@@ -439,7 +439,7 @@ window.persistOdonto=async(win,data)=>{
 };
 const priorRenderOdonto=render;render=function(){captureOdonto();priorRenderOdonto();const frame=document.getElementById('odonto-editor');if(frame)frame.srcdoc=odontogramDocument;};
 window.addEventListener('beforeunload',e=>{captureOdonto();const dirty=[...odontoDrafts.entries()].some(([id,d])=>JSON.stringify(d.data)!==JSON.stringify(state.patients.find(p=>p.id===id)?.odontogramVersions?.at(-1)?.data||{entries:[],specifications:'',observations:''}));if(activeUser&&dirty){e.preventDefault();e.returnValue=''}});
-</script></body></html>
+</script><script src="spiegel-assistant.js"></script></body></html>
 
 
 
