@@ -439,7 +439,7 @@ window.persistOdonto=async(win,data)=>{
 };
 const priorRenderOdonto=render;render=function(){captureOdonto();priorRenderOdonto();const frame=document.getElementById('odonto-editor');if(frame)frame.srcdoc=odontogramDocument;};
 window.addEventListener('beforeunload',e=>{captureOdonto();const dirty=[...odontoDrafts.entries()].some(([id,d])=>JSON.stringify(d.data)!==JSON.stringify(state.patients.find(p=>p.id===id)?.odontogramVersions?.at(-1)?.data||{entries:[],specifications:'',observations:''}));if(activeUser&&dirty){e.preventDefault();e.returnValue=''}});
-</script><script src="spiegel-assistant-v5.js"></script></body></html>
+</script><script src="spiegel-assistant-v6.js"></script></body></html>
 
 
 
