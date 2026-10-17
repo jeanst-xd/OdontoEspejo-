@@ -128,12 +128,18 @@ body{background:radial-gradient(ellipse at 85% 0%,#cee3df,transparent 58%),radia
 </style><style id="space-banner">
 .dashboard-mode .ref-hero.ref-hero-full{height:auto;min-height:0;aspect-ratio:2170/725;padding:0;background:#100e2c;position:relative;overflow:hidden}
 .dashboard-mode .ref-hero-full img.ref-hero-art{display:block;position:static;width:100%;height:auto;max-width:none;opacity:1;object-fit:contain;mask-image:none;-webkit-mask-image:none;margin:0}
-.dashboard-mode .ref-hero-full .ref-hero-copy{display:none}
-.dashboard-mode .ref-hero-full .ref-hero-image-link{position:absolute;left:3.35%;top:64.4%;width:14.65%;height:11.6%;padding:0;margin:0;border:0;border-radius:999px;background:transparent;cursor:pointer;box-shadow:none}
+.dashboard-mode .ref-hero-full::after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(10,5,30,.88) 0%,rgba(16,7,38,.67) 34%,rgba(20,8,41,.2) 60%,transparent 78%)}
+.dashboard-mode .ref-hero-full .ref-hero-copy{display:block;position:absolute;z-index:2;left:3.35%;top:50%;transform:translateY(-50%);width:44%;max-width:480px;padding:0}
+.dashboard-mode .ref-hero-full .ref-hero-copy small{color:#ded3ed;letter-spacing:1.8px;font-size:clamp(8px,.75vw,11px)}
+.dashboard-mode .ref-hero-full .ref-hero-copy h1{color:#fff;font-size:clamp(23px,2.55vw,42px);line-height:1.1;margin:12px 0 9px;text-shadow:0 3px 18px rgba(8,3,25,.55)}
+.dashboard-mode .ref-hero-full .ref-hero-copy h1 span{background:linear-gradient(90deg,#91edf2,#c18af1);background-clip:text;-webkit-background-clip:text;color:transparent}
+.dashboard-mode .ref-hero-full .ref-hero-copy p{color:#eee8f5;font-size:clamp(10px,.95vw,14px);margin:0 0 14px;text-shadow:0 2px 12px rgba(8,3,25,.7)}
+.dashboard-mode .ref-hero-full .ref-hero-copy button{background:#fff;color:#51317d;padding:9px 16px}
+.dashboard-mode .ref-hero-full .ref-hero-image-link{display:none}
 .dashboard-mode .ref-hero-full .ref-hero-image-link:hover{background:rgba(116,85,194,.13)}
 .dashboard-mode .ref-hero-full .ref-hero-image-link:focus-visible{outline:3px solid #69e2ef;outline-offset:4px}
 @media(max-width:760px){
-.dashboard-mode .ref-hero.ref-hero-full{aspect-ratio:auto;min-height:340px;background:linear-gradient(90deg,rgba(12,9,38,.96),rgba(12,9,38,.6)),url('mascotas-espacio.webp') center/cover}
+.dashboard-mode .ref-hero.ref-hero-full{aspect-ratio:auto;min-height:340px;background:linear-gradient(90deg,rgba(12,9,38,.96),rgba(12,9,38,.6)),url('portada-halloween-completa-v1.webp') center/cover}
 .dashboard-mode .ref-hero-full img.ref-hero-art,.dashboard-mode .ref-hero-full .ref-hero-image-link{display:none}
 .dashboard-mode .ref-hero-full .ref-hero-copy{display:block;position:relative;width:100%;padding:28px 22px;box-sizing:border-box}
 .dashboard-mode .ref-hero-full .ref-hero-copy small{color:#c6b9e4;letter-spacing:2px;font-size:9px}
